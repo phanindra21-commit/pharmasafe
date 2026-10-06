@@ -12,28 +12,38 @@ All data in this repository is **fictional sample data**: the brand names, pharm
 
 ---
 
+## Screenshots
+
+| Batch check (recalled)                    | Stock search                         |
+| ----------------------------------------- | ------------------------------------ |
+| ![](docs/screenshots/verify-recalled.png) | ![](docs/screenshots/find-stock.png) |
+
+| Recall impact                           | Running on Kubernetes             |
+| --------------------------------------- | --------------------------------- |
+| ![](docs/screenshots/recall-impact.png) | ![](docs/screenshots/kubectl.png) |
+
 ## Features (MVP)
 
-| Module | What it does | Endpoint |
-|---|---|---|
-| Medicine safety | Checks a batch number and returns risk level `LOW` / `REVIEW_REQUIRED` / `HIGH_PRIORITY` with reasons | `GET /api/batches/{batchNumber}/verify` |
-| Batch traceability | Lists the batches of a medicine | `GET /api/medicines/{id}/batches` |
-| Recall response | Records a recall, marks the batch, and shows which pharmacies hold it | `POST /api/recalls`, `GET /api/recalls/{id}/impact` |
-| Inter-pharmacy availability | Finds safe stock, nearest area first, earliest expiry first (FEFO) | `GET /api/availability?medicine=&area=` |
-| Unified dashboard | Network-wide numbers | `GET /api/dashboard/summary` |
+| Module                      | What it does                                                                                          | Endpoint                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Medicine safety             | Checks a batch number and returns risk level `LOW` / `REVIEW_REQUIRED` / `HIGH_PRIORITY` with reasons | `GET /api/batches/{batchNumber}/verify`             |
+| Batch traceability          | Lists the batches of a medicine                                                                       | `GET /api/medicines/{id}/batches`                   |
+| Recall response             | Records a recall, marks the batch, and shows which pharmacies hold it                                 | `POST /api/recalls`, `GET /api/recalls/{id}/impact` |
+| Inter-pharmacy availability | Finds safe stock, nearest area first, earliest expiry first (FEFO)                                    | `GET /api/availability?medicine=&area=`             |
+| Unified dashboard           | Network-wide numbers                                                                                  | `GET /api/dashboard/summary`                        |
 
 There is also a simple web UI at `http://localhost:8080`.
 
 ### Safety rules
 
-| Check | Risk level |
-|---|---|
-| Batch has an active recall | HIGH_PRIORITY |
-| Batch is quarantined | HIGH_PRIORITY |
-| Batch has expired | HIGH_PRIORITY |
-| Expires within 30 days | REVIEW_REQUIRED |
-| Medicine has a look-alike/sound-alike name | REVIEW_REQUIRED |
-| Expires within 90 days | LOW (notice only) |
+| Check                                      | Risk level        |
+| ------------------------------------------ | ----------------- |
+| Batch has an active recall                 | HIGH_PRIORITY     |
+| Batch is quarantined                       | HIGH_PRIORITY     |
+| Batch has expired                          | HIGH_PRIORITY     |
+| Expires within 30 days                     | REVIEW_REQUIRED   |
+| Medicine has a look-alike/sound-alike name | REVIEW_REQUIRED   |
+| Expires within 90 days                     | LOW (notice only) |
 
 The overall risk is the most serious level among all alerts.
 
@@ -41,16 +51,16 @@ The overall risk is the most serious level among all alerts.
 
 ## Tech stack
 
-| Area | Technology |
-|---|---|
-| Backend | Java 21, Spring Boot 3.3, Spring Data JPA, Bean Validation |
-| Database | PostgreSQL 16 (Kubernetes / Docker); H2 in-memory for local runs and tests |
-| Frontend | HTML + JavaScript (served by Spring Boot) |
-| Testing | JUnit 5, MockMvc, Postman collection |
-| Version control | **GitHub** |
-| Containers | **Docker** (multi-stage build that also runs the tests) |
-| CI/CD | **Jenkins** (declarative `Jenkinsfile`) |
-| Orchestration | **Kubernetes** (Deployment, Service, Secret, PersistentVolumeClaim) |
+| Area            | Technology                                                                 |
+| --------------- | -------------------------------------------------------------------------- |
+| Backend         | Java 21, Spring Boot 3.3, Spring Data JPA, Bean Validation                 |
+| Database        | PostgreSQL 16 (Kubernetes / Docker); H2 in-memory for local runs and tests |
+| Frontend        | HTML + JavaScript (served by Spring Boot)                                  |
+| Testing         | JUnit 5, MockMvc, Postman collection                                       |
+| Version control | **GitHub**                                                                 |
+| Containers      | **Docker** (multi-stage build that also runs the tests)                    |
+| CI/CD           | **Jenkins** (declarative `Jenkinsfile`)                                    |
+| Orchestration   | **Kubernetes** (Deployment, Service, Secret, PersistentVolumeClaim)        |
 
 ## DevOps pipeline
 
@@ -65,12 +75,12 @@ flowchart LR
     J -->|curl smoke test| APP
 ```
 
-| Stage | What happens |
-|---|---|
-| Checkout | Jenkins pulls the latest code from GitHub |
-| Build & Test | `docker build` compiles the app and runs all JUnit tests; a failing test stops the pipeline |
-| Deploy | `kubectl apply` creates/updates PostgreSQL and the app; `kubectl set image` rolls out the new build |
-| Smoke Test | `curl` checks the live API at `http://localhost:30080` |
+| Stage        | What happens                                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------- |
+| Checkout     | Jenkins pulls the latest code from GitHub                                                           |
+| Build & Test | `docker build` compiles the app and runs all JUnit tests; a failing test stops the pipeline         |
+| Deploy       | `kubectl apply` creates/updates PostgreSQL and the app; `kubectl set image` rolls out the new build |
+| Smoke Test   | `curl` checks the live API at `http://localhost:30080`                                              |
 
 Step-by-step setup: **[docs/DEVOPS.md](docs/DEVOPS.md)**.
 
@@ -88,7 +98,7 @@ mvn spring-boot:run
 
 Open **http://localhost:8080**. To try it, verify batch `AZT-2402` (recalled), `AMX-2506` (expiring soon + look-alike) or `PCM-2501` (safe).
 
-In IntelliJ: *File → Open* → select `pom.xml` → *Open as Project*, then run `PharmaSafeApplication`.
+In IntelliJ: _File → Open_ → select `pom.xml` → _Open as Project_, then run `PharmaSafeApplication`.
 
 H2 database console: http://localhost:8080/h2-console (JDBC URL `jdbc:h2:mem:pharmasafe`, user `sa`, empty password).
 
