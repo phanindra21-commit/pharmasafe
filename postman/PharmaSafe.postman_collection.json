@@ -1,0 +1,363 @@
+{
+  "info": {
+    "name": "PharmaSafe",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "PharmaSafe MVP API. Start the app first (mvn spring-boot:run)."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Verify",
+      "item": [
+        {
+          "name": "Safe batch (PCM-2501)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/PCM-2501/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "PCM-2501",
+                "verify"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recalled batch (AZT-2402)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/AZT-2402/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "AZT-2402",
+                "verify"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Expired batch (CTZ-2404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/CTZ-2404/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "CTZ-2404",
+                "verify"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Expiring soon + look-alike (AMX-2506)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/AMX-2506/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "AMX-2506",
+                "verify"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Unknown batch \u2192 404",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/batches/NOPE-0000/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "batches",
+                "NOPE-0000",
+                "verify"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medicines",
+      "item": [
+        {
+          "name": "Search medicines",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/medicines?query=amox",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "medicines"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "amox"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Batches of medicine 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/medicines/1/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "medicines",
+                "1",
+                "batches"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "item": [
+        {
+          "name": "Azithromycin near LB Nagar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability?medicine=azithromycin&area=LB Nagar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "medicine",
+                  "value": "azithromycin"
+                },
+                {
+                  "key": "area",
+                  "value": "LB Nagar"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Amoxicillin near Tarnaka",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability?medicine=amoxicillin&area=Tarnaka",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "medicine",
+                  "value": "amoxicillin"
+                },
+                {
+                  "key": "area",
+                  "value": "Tarnaka"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recalls",
+      "item": [
+        {
+          "name": "List active recalls",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/recalls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "recalls"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Impact of recall 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/recalls/1/impact",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "recalls",
+                "1",
+                "impact"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create recall",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/recalls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "recalls"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchNumber\": \"MTF-2412\",\n  \"reason\": \"Labelling error on outer carton (sample)\",\n  \"severity\": \"CLASS_III\",\n  \"issuedBy\": \"Manual entry\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Duplicate recall \u2192 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/recalls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "recalls"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchNumber\": \"AZT-2402\",\n  \"reason\": \"Duplicate\",\n  \"severity\": \"CLASS_II\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Invalid body \u2192 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/recalls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "recalls"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchNumber\": \"\",\n  \"reason\": \"\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "summary"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
