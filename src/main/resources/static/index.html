@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PharmaSafe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #17302b;
+    --muted: #5b6f6a;
+    --paper: #f6f8f7;
+    --card: #ffffff;
+    --line: #d7e0dd;
+    --brand: #136f63;
+    --brand-ink: #ffffff;
+    --high: #b42318;   --high-bg: #fdecea;
+    --review: #9a5b00; --review-bg: #fff4e0;
+    --low: #1d6b3a;    --low-bg: #e8f5ec;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+  header { background: var(--brand); color: var(--brand-ink); padding: 14px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  header h1 { font-size: 20px; margin: 0; }
+  header p { margin: 0; opacity: .85; font-size: 14px; }
+  nav { display: flex; gap: 4px; padding: 0 20px; background: var(--card); border-bottom: 1px solid var(--line); overflow-x: auto; }
+  nav button { border: 0; background: none; padding: 14px 14px 12px; font: inherit; color: var(--muted); border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; }
+  nav button[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); font-weight: 700; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+  section[hidden] { display: none; }
+  h2 { font-size: 22px; margin: 0 0 4px; }
+  .hint { color: var(--muted); margin: 0 0 16px; }
+  form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  input, select, textarea { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); min-width: 0; }
+  input { flex: 1 1 200px; }
+  button.primary { font: inherit; font-weight: 700; padding: 10px 18px; border: 0; border-radius: 6px; background: var(--brand); color: var(--brand-ink); cursor: pointer; }
+  button.link { font: inherit; background: none; border: 0; color: var(--brand); text-decoration: underline; cursor: pointer; padding: 0; }
+  :focus-visible { outline: 3px solid #f2b705; outline-offset: 2px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
+  .risk { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 8px; margin-bottom: 14px; }
+  .risk strong { font-size: 20px; }
+  .HIGH_PRIORITY { background: var(--high-bg); color: var(--high); }
+  .REVIEW_REQUIRED { background: var(--review-bg); color: var(--review); }
+  .LOW { background: var(--low-bg); color: var(--low); }
+  .alert { border-left: 4px solid currentColor; padding: 8px 12px; margin: 8px 0; border-radius: 0 6px 6px 0; }
+  .alert b { display: block; font-size: 14px; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 0; }
+  dt { color: var(--muted); }
+  dd { margin: 0; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 400; font-size: 14px; }
+  td.n, th.n { text-align: right; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .stat .v { font-size: 30px; font-weight: 700; }
+  .stat .k { color: var(--muted); font-size: 14px; }
+  .stat.warn .v { color: var(--high); }
+  .note { color: var(--muted); font-size: 14px; }
+  .error { background: var(--high-bg); color: var(--high); padding: 12px 14px; border-radius: 6px; }
+  .samples { font-size: 14px; color: var(--muted); margin: -10px 0 16px; }
+  .samples button { margin-right: 10px; }
+  ol { padding-left: 20px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 0 16px 24px; }
+  @media (max-width: 560px) { dl { grid-template-columns: 1fr; } dt { margin-top: 6px; } }
+</style>
+</head>
+<body>
+<header>
+  <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg>
+  <h1>PharmaSafe</h1>
+  <p>Safety checks, recalls and stock for pharmacists. You make the final call.</p>
+</header>
+
+<nav role="tablist" aria-label="Sections">
+  <button role="tab" aria-selected="true" data-tab="verify">Verify a batch</button>
+  <button role="tab" aria-selected="false" data-tab="availability">Find stock</button>
+  <button role="tab" aria-selected="false" data-tab="recalls">Recalls</button>
+  <button role="tab" aria-selected="false" data-tab="dashboard">Dashboard</button>
+</nav>
+
+<main>
+  <section id="tab-verify">
+    <h2>Verify a batch</h2>
+    <p class="hint">Enter the batch number printed on the strip or carton.</p>
+    <form id="verifyForm">
+      <input id="batchInput" placeholder="e.g. AZT-2402" aria-label="Batch number" required>
+      <button class="primary">Check batch</button>
+    </form>
+    <div class="samples">Try:
+      <button class="link" data-batch="PCM-2501">PCM-2501</button>
+      <button class="link" data-batch="AZT-2402">AZT-2402</button>
+      <button class="link" data-batch="AMX-2506">AMX-2506</button>
+      <button class="link" data-batch="CTZ-2404">CTZ-2404</button>
+      <button class="link" data-batch="LOS-2408">LOS-2408</button>
+    </div>
+    <div id="verifyOut" aria-live="polite"></div>
+  </section>
+
+  <section id="tab-availability" hidden>
+    <h2>Find stock nearby</h2>
+    <p class="hint">Search by brand or generic name. Recalled, quarantined and expired batches are left out.</p>
+    <form id="availForm">
+      <input id="medInput" placeholder="Medicine, e.g. Amoxicillin" aria-label="Medicine" required>
+      <input id="areaInput" placeholder="Your area (optional), e.g. Tarnaka" aria-label="Preferred area">
+      <button class="primary">Search</button>
+    </form>
+    <div id="availOut" aria-live="polite"></div>
+  </section>
+
+  <section id="tab-recalls" hidden>
+    <h2>Recalls</h2>
+    <p class="hint">Active recalls in the network. Open one to see which pharmacies hold the batch.</p>
+    <div id="recallList"></div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Record a new recall</h3>
+      <form id="recallForm">
+        <input id="rBatch" placeholder="Batch number" aria-label="Batch number" required>
+        <select id="rSeverity" aria-label="Severity">
+          <option value="CLASS_I">Class I (most serious)</option>
+          <option value="CLASS_II" selected>Class II</option>
+          <option value="CLASS_III">Class III</option>
+        </select>
+        <input id="rReason" placeholder="Reason" aria-label="Reason" required style="flex-basis:100%">
+        <input id="rIssuer" placeholder="Issued by (optional)" aria-label="Issued by">
+        <button class="primary">Record recall</button>
+      </form>
+    </div>
+    <div id="impactOut" aria-live="polite"></div>
+  </section>
+
+  <section id="tab-dashboard" hidden>
+    <h2>Dashboard</h2>
+    <p class="hint">Network-wide numbers.</p>
+    <div id="dashOut" class="stats"></div>
+  </section>
+</main>
+<footer>PharmaSafe MVP · sample data only · it does not diagnose, prescribe or certify authenticity.</footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const label = { HIGH_PRIORITY: 'High priority', REVIEW_REQUIRED: 'Review required', LOW: 'Low risk' };
+
+async function api(path, options) {
+  const res = await fetch(path, options);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.message || ('Request failed with status ' + res.status));
+  return body;
+}
+const showError = (el, e) => el.innerHTML = `<div class="error">${esc(e.message)}</div>`;
+
+// ---- Tabs ----
+document.querySelectorAll('nav button').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b === btn));
+  document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== 'tab-' + btn.dataset.tab);
+  if (btn.dataset.tab === 'recalls') loadRecalls();
+  if (btn.dataset.tab === 'dashboard') loadDashboard();
+}));
+
+// ---- Verify ----
+async function verify(batch) {
+  const out = $('#verifyOut');
+  try {
+    const r = await api('/api/batches/' + encodeURIComponent(batch) + '/verify');
+    const alerts = r.alerts.length
+      ? r.alerts.map(a => `<div class="alert ${a.level}"><b>${esc(a.type.replaceAll('_', ' '))}</b>${esc(a.message)}</div>`).join('')
+      : '<p>No safety alerts for this batch.</p>';
+    out.innerHTML = `
+      <div class="risk ${r.riskLevel}"><strong>${label[r.riskLevel]}</strong><span>${esc(r.medicine.brandName)} · batch ${esc(r.batchNumber)}</span></div>
+      <div class="card">${alerts}</div>
+      <div class="card"><dl>
+        <dt>Medicine</dt><dd>${esc(r.medicine.brandName)} (${esc(r.medicine.genericName)} ${esc(r.medicine.strength)}, ${esc(r.medicine.dosageForm)})</dd>
+        <dt>Manufacturer</dt><dd>${esc(r.medicine.manufacturer)}</dd>
+        <dt>Manufactured</dt><dd>${esc(r.manufactureDate)}</dd>
+        <dt>Expiry</dt><dd>${esc(r.expiryDate)}</dd>
+        <dt>Supplier</dt><dd>${esc(r.supplier)}</dd>
+        <dt>Status</dt><dd>${esc(r.status)}</dd>
+      </dl></div>
+      <p class="note">${esc(r.note)}</p>`;
+  } catch (e) { showError(out, e); }
+}
+$('#verifyForm').addEventListener('submit', e => { e.preventDefault(); verify($('#batchInput').value); });
+document.querySelectorAll('[data-batch]').forEach(b => b.addEventListener('click', () => {
+  $('#batchInput').value = b.dataset.batch; verify(b.dataset.batch);
+}));
+
+// ---- Availability ----
+$('#availForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const out = $('#availOut');
+  const q = new URLSearchParams({ medicine: $('#medInput').value });
+  if ($('#areaInput').value.trim()) q.set('area', $('#areaInput').value.trim());
+  try {
+    const r = await api('/api/availability?' + q);
+    if (!r.pharmacies.length) { out.innerHTML = `<p>${esc(r.note)}</p>`; return; }
+    out.innerHTML = `<p><b>${r.totalUnits}</b> units at <b>${r.pharmacies.length}</b> pharmacies.</p>` +
+      r.pharmacies.map(p => `
+        <div class="card">
+          <b>${esc(p.pharmacyName)}</b> · ${esc(p.area)} · <a href="tel:${esc(p.phone)}">${esc(p.phone)}</a>
+          <table><thead><tr><th>Batch</th><th>Medicine</th><th>Expiry</th><th class="n">Units</th></tr></thead><tbody>
+          ${p.batches.map(b => `<tr><td>${esc(b.batchNumber)}</td><td>${esc(b.brandName)}</td><td>${esc(b.expiryDate)}</td><td class="n">${b.quantity}</td></tr>`).join('')}
+          </tbody></table>
+        </div>`).join('') + `<p class="note">${esc(r.note)}</p>`;
+  } catch (err) { showError(out, err); }
+});
+
+// ---- Recalls ----
+async function loadRecalls() {
+  const el = $('#recallList');
+  try {
+    const list = await api('/api/recalls');
+    el.innerHTML = list.length ? `<div class="card"><table>
+      <thead><tr><th>Batch</th><th>Medicine</th><th>Severity</th><th>Issued</th><th></th></tr></thead><tbody>
+      ${list.map(r => `<tr><td>${esc(r.batchNumber)}</td><td>${esc(r.brandName)}</td><td>${esc(r.severity)}</td><td>${esc(r.issuedOn)}</td>
+        <td><button class="link" data-impact="${r.id}">See impact</button></td></tr>`).join('')}
+      </tbody></table></div>` : '<p>No active recalls.</p>';
+    el.querySelectorAll('[data-impact]').forEach(b => b.addEventListener('click', () => showImpact(b.dataset.impact)));
+  } catch (e) { showError(el, e); }
+}
+function renderImpact(r) {
+  $('#impactOut').innerHTML = `
+    <div class="risk HIGH_PRIORITY"><strong>Recall impact</strong><span>${esc(r.recall.brandName)} · batch ${esc(r.recall.batchNumber)} · ${esc(r.recall.severity)}</span></div>
+    <div class="card">
+      <p>${esc(r.recall.reason)}</p>
+      <p><b>${r.totalUnits}</b> units at <b>${r.affectedPharmacies}</b> pharmacies.</p>
+      <table><thead><tr><th>Pharmacy</th><th>Area</th><th>Phone</th><th class="n">Units</th></tr></thead><tbody>
+      ${r.pharmacies.map(p => `<tr><td>${esc(p.pharmacyName)}</td><td>${esc(p.area)}</td><td>${esc(p.phone)}</td><td class="n">${p.quantity}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="card"><b>Recommended actions</b><ol>${r.recommendedActions.map(a => `<li>${esc(a)}</li>`).join('')}</ol></div>`;
+  $('#impactOut').scrollIntoView({ behavior: 'smooth' });
+}
+async function showImpact(id) {
+  try { renderImpact(await api('/api/recalls/' + id + '/impact')); } catch (e) { showError($('#impactOut'), e); }
+}
+$('#recallForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const r = await api('/api/recalls', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ batchNumber: $('#rBatch').value, reason: $('#rReason').value,
+                             severity: $('#rSeverity').value, issuedBy: $('#rIssuer').value })
+    });
+    e.target.reset();
+    await loadRecalls();
+    renderImpact(r);
+  } catch (err) { showError($('#impactOut'), err); }
+});
+
+// ---- Dashboard ----
+async function loadDashboard() {
+  const el = $('#dashOut');
+  try {
+    const d = await api('/api/dashboard/summary');
+    const items = [
+      ['Medicines', d.medicines], ['Batches', d.batches], ['Pharmacies', d.pharmacies],
+      ['Active recalls', d.activeRecalls, d.activeRecalls > 0],
+      ['Units in recalled batches', d.unitsInRecalledBatches, d.unitsInRecalledBatches > 0],
+      ['Batches expiring in 30 days', d.batchesExpiringIn30Days, d.batchesExpiringIn30Days > 0]
+    ];
+    el.innerHTML = items.map(([k, v, warn]) => `<div class="stat${warn ? ' warn' : ''}"><div class="v">${v}</div><div class="k">${k}</div></div>`).join('');
+  } catch (e) { showError(el, e); }
+}
+</script>
+</body>
+</html>
