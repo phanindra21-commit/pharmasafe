@@ -22,6 +22,10 @@ All data in this repository is **fictional sample data**: the brand names, pharm
 | --------------------------------------- | --------------------------------- |
 | ![](docs/screenshots/recall-impact.png) | ![](docs/screenshots/kubectl.png) |
 
+| Jenkins pipeline                         | Jenkins console                           |
+| ---------------------------------------- | ----------------------------------------- |
+| ![](docs/screenshots/jenkins-stages.png) | ![](docs/screenshots/jenkins-success.png) |
+
 ## Features (MVP)
 
 | Module                      | What it does                                                                                          | Endpoint                                            |
