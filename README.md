@@ -8,7 +8,7 @@ A pharmacist-focused safety layer for medicine batches. It answers three questio
 
 > **Scope boundary.** PharmaSafe does not replace a pharmacy management system, diagnose, prescribe or certify that a medicine is genuine. It gives pharmacists information to act on, and the final decision always stays with the pharmacist.
 
-All data in this repository is **fictional sample data**: the brand names, pharmacies, phone numbers and recalls are all invented.
+All data in this repository is **fictional sample data**: the brand names, manufacturers, 26 pharmacies, phone numbers, batches and recalls are invented. Only the 18 Hyderabad area names and the generic medicine names are real.
 
 ---
 
@@ -33,7 +33,7 @@ All data in this repository is **fictional sample data**: the brand names, pharm
 | Medicine safety             | Checks a batch number and returns risk level `LOW` / `REVIEW_REQUIRED` / `HIGH_PRIORITY` with reasons | `GET /api/batches/{batchNumber}/verify`             |
 | Batch traceability          | Lists the batches of a medicine                                                                       | `GET /api/medicines/{id}/batches`                   |
 | Recall response             | Records a recall, marks the batch, and shows which pharmacies hold it                                 | `POST /api/recalls`, `GET /api/recalls/{id}/impact` |
-| Inter-pharmacy availability | Finds safe stock, nearest area first, earliest expiry first (FEFO)                                    | `GET /api/availability?medicine=&area=`             |
+| Inter-pharmacy availability | Finds safe stock at the nearest pharmacies to a chosen Hyderabad area, within a radius (2/5/10/25 km), earliest expiry first (FEFO) | `GET /api/availability?medicine=&area=&radiusKm=`, `GET /api/areas` |             |
 | Unified dashboard           | Network-wide numbers                                                                                  | `GET /api/dashboard/summary`                        |
 
 There is also a simple web UI at `http://localhost:8080`.
@@ -154,7 +154,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/API.md](docs/API.md).
 - Horizontal Pod Autoscaler and an Ingress with HTTPS
 - Real recall feed integration (e.g. CDSCO alerts) instead of manual entry
 - Barcode / QR scan of batch numbers from the phone camera
-- Location-based distance instead of area matching
+- Use the pharmacist's live GPS location and real map tiles instead of a fixed list of areas
 - Audit log of every verification
 
 ## Limitations
