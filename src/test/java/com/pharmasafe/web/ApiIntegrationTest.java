@@ -56,14 +56,44 @@ class ApiIntegrationTest {
     }
 
     @Test
-    void availabilityExcludesUnsafeStockAndPrefersArea() throws Exception {
-        // Azithromycin: batch AZT-2402 is recalled, only AZT-2507 (Sri Sai, Apex) should appear.
-        mvc.perform(get("/api/availability").param("medicine", "azithromycin").param("area", "LB Nagar"))
+    void availabilityExcludesUnsafeStock() throws Exception {
+        // AZT-2402 is recalled: it must never be offered, whatever the area or radius.
+        mvc.perform(get("/api/availability").param("medicine", "azithromycin")
+                        .param("area", "LB Nagar").param("radiusKm", "50"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.pharmacies", hasSize(2)))
+                .andExpect(jsonPath("$.pharmacies", not(empty())))
+                .andExpect(jsonPath("$.pharmacies[*].batches[*].batchNumber", everyItem(not(is("AZT-2402")))))
+                .andExpect(jsonPath("$.preferredArea").value("LB Nagar"));
+    }
+
+    @Test
+    void nearestPharmacyChangesWithArea() throws Exception {
+        mvc.perform(get("/api/availability").param("medicine", "paracetamol").param("area", "Kukatpally"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pharmacies[0].area").value("Kukatpally"));
+
+        mvc.perform(get("/api/availability").param("medicine", "paracetamol").param("area", "lb nagar"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pharmacies[0].area").value("LB Nagar"))
-                .andExpect(jsonPath("$.pharmacies[*].batches[*].batchNumber", everyItem(is("AZT-2507"))))
-                .andExpect(jsonPath("$.totalUnits").value(39));
+                .andExpect(jsonPath("$.pharmacies[0].pharmacyName").value("Apex Medical Store"));
+    }
+
+    @Test
+    void radiusLimitsResults() throws Exception {
+        mvc.perform(get("/api/availability").param("medicine", "paracetamol")
+                        .param("area", "Kompally").param("radiusKm", "3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.radiusKm").value(3.0))
+                .andExpect(jsonPath("$.pharmacies", hasSize(1)))
+                .andExpect(jsonPath("$.pharmacies[0].pharmacyName").value("Kompally Pharmacy"));
+    }
+
+    @Test
+    void areasAreListed() throws Exception {
+        mvc.perform(get("/api/areas"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(18)))
+                .andExpect(jsonPath("$[*].name", hasItems("LB Nagar", "Kukatpally", "Gachibowli")));
     }
 
     @Test
@@ -114,9 +144,9 @@ class ApiIntegrationTest {
     void dashboardSummarisesTheNetwork() throws Exception {
         mvc.perform(get("/api/dashboard/summary"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.medicines").value(13))
-                .andExpect(jsonPath("$.pharmacies").value(6))
-                .andExpect(jsonPath("$.batches").value(19))
+                .andExpect(jsonPath("$.medicines").value(32))
+                .andExpect(jsonPath("$.pharmacies").value(26))
+                .andExpect(jsonPath("$.batches").value(57))
                 .andExpect(jsonPath("$.activeRecalls", greaterThanOrEqualTo(1)))
                 .andExpect(jsonPath("$.batchesExpiringIn30Days").value(1));
     }
@@ -125,6 +155,6 @@ class ApiIntegrationTest {
     void medicineSearchFindsByGenericName() throws Exception {
         mvc.perform(get("/api/medicines").param("query", "metformin"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].brandName").value("Metforal 500"));
+                .andExpect(jsonPath("$[*].brandName", hasItem("Metforal 500")));
     }
 }

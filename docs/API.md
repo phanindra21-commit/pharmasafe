@@ -48,26 +48,37 @@ Alert types: `RECALL`, `QUARANTINE`, `EXPIRED`, `EXPIRING_SOON`, `EXPIRY_NOTICE`
 
 ## Find available stock
 
-`GET /api/availability?medicine=azithromycin&area=LB Nagar`
+`GET /api/availability?medicine=azithromycin&area=LB Nagar&radiusKm=5`
 
 | Parameter | Required | Notes |
 |---|---|---|
 | `medicine` | yes | Brand or generic name, partial match |
-| `area` | no | Pharmacies in this area are listed first |
+| `area` | no | One of the names from `/api/areas`. Pharmacies are measured from the area centre and sorted nearest first |
+| `radiusKm` | no | Search radius in km (default 5). If nothing is inside it, the nearest 3 pharmacies with stock are returned instead |
+
+Batches inside each pharmacy are listed earliest expiry first (FEFO).
 
 ```json
 {
   "medicineQuery": "azithromycin",
   "preferredArea": "LB Nagar",
-  "totalUnits": 39,
+  "centerLatitude": 17.3457, "centerLongitude": 78.5522,
+  "radiusKm": 5.0,
+  "totalUnits": 159,
   "pharmacies": [
-    { "pharmacyId": 6, "pharmacyName": "Apex Medical Store", "area": "LB Nagar", "phone": "+91 90000 00006", "totalUnits": 14,
-      "batches": [ { "batchNumber": "AZT-2507", "brandName": "Azithra 500", "expiryDate": "2028-08-26", "quantity": 14 } ] },
-    { "pharmacyId": 3, "pharmacyName": "Sri Sai Medicals", "area": "Uppal", "phone": "+91 90000 00003", "totalUnits": 25, "batches": [ ... ] }
+    { "pharmacyId": 11, "pharmacyName": "Apex Medical Store", "area": "LB Nagar", "phone": "+91 90000 00011",
+      "latitude": 17.3465, "longitude": 78.551, "distanceKm": 0.2, "totalUnits": 14,
+      "batches": [ { "batchNumber": "AZT-2507", "brandName": "Azithra 500", "expiryDate": "2028-08-27", "quantity": 14 } ] }
   ],
-  "note": "Only active, unexpired, non-recalled batches are shown. Call the pharmacy to confirm before sending a patient."
+  "note": "Pharmacies within 5 km of LB Nagar, nearest first. Only active, unexpired, non-recalled batches are shown."
 }
 ```
+
+Without `area`, the whole network is returned, most stock first.
+
+## Areas
+
+`GET /api/areas` lists the 18 Hyderabad areas the search understands, each with `name`, `latitude` and `longitude`.
 
 ## Recalls
 

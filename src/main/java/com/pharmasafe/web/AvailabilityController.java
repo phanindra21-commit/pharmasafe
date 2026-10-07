@@ -14,10 +14,14 @@ public class AvailabilityController {
         this.availability = availability;
     }
 
-    /** GET /api/availability?medicine=amoxicillin&area=Tarnaka → stock across the network. */
+    /**
+     * GET /api/availability?medicine=amoxicillin&area=Tarnaka&radiusKm=5
+     * → safe stock in pharmacies within radiusKm of the area, nearest first.
+     */
     @GetMapping
     public AvailabilityResponse find(@RequestParam String medicine,
-                                     @RequestParam(required = false) String area) {
-        return availability.find(medicine, area);
+                                     @RequestParam(required = false) String area,
+                                     @RequestParam(required = false) Double radiusKm) {
+        return availability.find(medicine, area, radiusKm);
     }
 }

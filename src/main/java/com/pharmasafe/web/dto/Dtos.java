@@ -50,9 +50,11 @@ public final class Dtos {
     public record BatchStock(String batchNumber, String brandName, LocalDate expiryDate, int quantity) { }
 
     public record PharmacyStock(Long pharmacyId, String pharmacyName, String area, String phone,
+                                Double latitude, Double longitude, Double distanceKm,
                                 int totalUnits, List<BatchStock> batches) { }
 
     public record AvailabilityResponse(String medicineQuery, String preferredArea,
+                                       Double centerLatitude, Double centerLongitude, Double radiusKm,
                                        int totalUnits, List<PharmacyStock> pharmacies, String note) { }
 
     public record RecallRequest(@NotBlank String batchNumber,
